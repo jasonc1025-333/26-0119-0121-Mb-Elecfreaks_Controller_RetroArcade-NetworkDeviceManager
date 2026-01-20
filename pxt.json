@@ -1,6 +1,6 @@
 {
     "name": "26-0119-0121-Mb-Elecfreaks_Controller_RetroArcade-NetworkDeviceManager (v0.1.x: 26-0120-1440)",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "",
     "dependencies": {
         "device": "*",
