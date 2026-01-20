@@ -1,3 +1,6 @@
+//// jwc 26-0120-1200 Main program for MicroBit Network Device Manager (NDM) - Arcade Version
+////
+
 /**
  * ============================================================================
  * 
@@ -98,7 +101,38 @@
 /**
  * Temporary variables for parsing
  */
-// Sort bots by most recent update (descending cycle_LastUpdate_Int)
+/**
+ * ============================================================================
+ * HELPER FUNCTIONS
+ * ============================================================================
+ */
+
+/**
+ * Pad field with spaces to fixed width, use "-" for empty values
+ */
+function padField(value: string, width: number): string {
+    let result = ""
+    if (!value || value === "" || value === "0") {
+        result = "-"  // Use "-" for empty/zero values
+    } else {
+        result = value
+    }
+    // Manual padding with spaces to reach desired width
+    while (result.length < width) {
+        result = result + " "
+    }
+    return result
+}
+
+/**
+ * ============================================================================
+ * DATA PROCESSING FUNCTIONS
+ * ============================================================================
+ */
+
+/**
+ * Sort bots by most recent update (descending cycle_LastUpdate_Int)
+ */
 function sortBotsByUpdateRecency () {
     // Simple bubble sort (sufficient for up to 50 bots)
     for (let i = 0; i <= scoreboard_BotsAll_ArrayListOfText_2D.length - 1 - 1; i++) {
@@ -151,8 +185,19 @@ function renderPage1_LiveMonitor () {
     for (let bot of visibleBots) {
         // Calculate age
         age = cycle_Current_Int - parseFloat(bot[8])
-        // Format: "abc01 001 50 50 51 52 56 57  2"
-        botLine = "" + bot[0] + " " + bot[1] + " " + bot[2] + " " + bot[3] + " " + bot[4] + " " + bot[5] + " " + bot[6] + " " + bot[7] + " " + age
+        
+        // Format with fixed-width columns for alignment
+        // Column widths: Id(5) Ch(3) WL(3) WR(3) W2L(3) W2R(3) AL(3) AR(3) Age(3)
+        botLine = padField(bot[0], 5) + " " +
+                  padField(bot[1], 3) + " " +
+                  padField(bot[2], 3) + " " +
+                  padField(bot[3], 3) + " " +
+                  padField(bot[4], 3) + " " +
+                  padField(bot[5], 3) + " " +
+                  padField(bot[6], 3) + " " +
+                  padField(bot[7], 3) + " " +
+                  padField("" + age, 3)
+        
         // Color based on age
         // Yellow (default - active)
         color = 5
