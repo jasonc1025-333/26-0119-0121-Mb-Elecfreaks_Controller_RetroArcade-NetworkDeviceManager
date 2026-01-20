@@ -1,5 +1,6 @@
 {
     "name": "26-0119-0121-rq100-scoreboardserver_onmicrobit-n-rpihub-25-0207--Ef_Arcade-NetworkDeviceManager",
+    "version": "0.1.0",
     "description": "",
     "dependencies": {
         "device": "*",
