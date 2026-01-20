@@ -171,13 +171,15 @@ function renderPage1_LiveMonitor () {
     //// jwc 26-0120-1540 pageNum.setMaxFontHeight(6)  // Original=8px (default), Reduced to 6px
     pageNum.setMaxFontHeight(5)  // jwc: Original=8px (default), Reduced to 5px
     pageNum.setPosition(145, 8)
-    // Column headers (abbreviated to fit)
+    // Column headers (abbreviated to fit) - W2L/W2R moved to Page 2
     yPos = 20
-    headerText = "Id    Ch  WL  WR  W2L W2R AL  AR  Age"
+    //// jwc 26-0120-1540 o headerText = "Id    Ch  WL  WR  W2L W2R AL  AR  Age"
+    headerText = "Id    Ch  WL  WR  AL  AR  Age"
     // Green
     header = textsprite.create(headerText, 0, 7)
     //// jwc 26-0120-1540 header.setMaxFontHeight(6)  // Original=8px (default), Reduced to 6px
-    header.setMaxFontHeight(5)  // jwc: Original=8px (default), Reduced to 5px to fit screen
+    //// jwc 26-0120-1540 header.setMaxFontHeight(5)  // Original=8px (default), Reduced to 5px
+    header.setFont(image.font5)  // jwc: Use built-in 5px font for better rendering
     header.setPosition(80, yPos)
     // Sort bots by most recent update (highest cycle_LastUpdate_Int first)
     sortBotsByUpdateRecency()
@@ -192,16 +194,17 @@ function renderPage1_LiveMonitor () {
         // Calculate age
         age = cycle_Current_Int - parseFloat(bot[8])
         
-        // Format with fixed-width columns for alignment
-        // Column widths: Id(5) Ch(3) WL(3) WR(3) W2L(3) W2R(3) AL(3) AR(3) Age(3)
+        // Format with fixed-width columns for alignment - W2L/W2R removed (moved to Page 2)
+        //// jwc 26-0120-1540 o Column widths: Id(5) Ch(3) WL(3) WR(3) W2L(3) W2R(3) AL(3) AR(3) Age(3)
+        // Column widths: Id(5) Ch(3) WL(3) WR(3) AL(3) AR(3) Age(3)
         botLine = padField(bot[0], 5) + " " +
                   padField(bot[1], 3) + " " +
                   padField(bot[2], 3) + " " +
                   padField(bot[3], 3) + " " +
-                  padField(bot[4], 3) + " " +
-                  padField(bot[5], 3) + " " +
-                  padField(bot[6], 3) + " " +
-                  padField(bot[7], 3) + " " +
+                  //// jwc 26-0120-1540 o padField(bot[4], 3) + " " +  // W2L - moved to Page 2
+                  //// jwc 26-0120-1540 o padField(bot[5], 3) + " " +  // W2R - moved to Page 2
+                  padField(bot[6], 3) + " " +  // AL
+                  padField(bot[7], 3) + " " +  // AR
                   padField("" + age, 3)
         
         // Color based on age
@@ -213,7 +216,8 @@ function renderPage1_LiveMonitor () {
         }
         botText = textsprite.create(botLine, 0, color)
         //// jwc 26-0120-1540 botText.setMaxFontHeight(6)  // Original=8px (default), Reduced to 6px
-        botText.setMaxFontHeight(5)  // jwc: Original=8px (default), Reduced to 5px to fit screen
+        //// jwc 26-0120-1540 botText.setMaxFontHeight(5)  // Original=8px (default), Reduced to 5px
+        botText.setFont(image.font5)  // jwc: Use built-in 5px font for better rendering
         botText.setPosition(80, yPos)
         yPos += LINE_HEIGHT
     }
