@@ -164,14 +164,17 @@ function renderPage1_LiveMonitor () {
     sprites.destroyAllSpritesOfKind(SpriteKind.Text)
     // Title bar
     title = textsprite.create("NETWORK DEVICE MANAGER", 0, 1)
+    title.setMaxFontHeight(6)  // jwc: Original=8px (default), Reduced to 6px to fit screen
     title.setPosition(80, 8)
     pageNum = textsprite.create("[1/3]", 0, 5)
+    pageNum.setMaxFontHeight(6)  // jwc: Original=8px (default), Reduced to 6px
     pageNum.setPosition(145, 8)
     // Column headers (abbreviated to fit)
     yPos = 20
-    headerText = "Id  Ch WL WR W2L W2R AL AR Age"
+    headerText = "Id    Ch  WL  WR  W2L W2R AL  AR  Age"
     // Green
     header = textsprite.create(headerText, 0, 7)
+    header.setMaxFontHeight(6)  // jwc: Original=8px (default), Reduced to 6px to fit screen
     header.setPosition(80, yPos)
     // Sort bots by most recent update (highest cycle_LastUpdate_Int first)
     sortBotsByUpdateRecency()
@@ -206,6 +209,7 @@ function renderPage1_LiveMonitor () {
             color = 1
         }
         botText = textsprite.create(botLine, 0, color)
+        botText.setMaxFontHeight(6)  // jwc: Original=8px (default), Reduced to 6px to fit screen
         botText.setPosition(80, yPos)
         yPos += LINE_HEIGHT
     }
