@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * RQ100 NETWORK DEVICE MANAGER (NDM) - ARCADE VERSION
+ * MICROBIT NETWORK DEVICE MANAGER (NDM) - ARCADE VERSION
  * ============================================================================
  * 
  * Converted from micro:bit LED display to Elecfreaks Retro Arcade controller
@@ -502,7 +502,7 @@ game.onUpdateInterval(500, function () {
  */
 
 // Show welcome splash
-game.splash("RQ100 NDM", "Network Device Manager")
+game.splash("MicroBit NDM", "Network Device Manager")
 game.splash("Use A/B to navigate", "Menu to freeze")
 
 // Initialize
