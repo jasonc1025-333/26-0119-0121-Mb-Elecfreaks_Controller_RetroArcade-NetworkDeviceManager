@@ -182,7 +182,8 @@ function renderPage1_LiveMonitor () {
     //// jwc 26-0120-1540 o header.setFont(image.font5)  // setFont() not supported
     header.setMaxFontHeight(8)  // jwc: Arcade minimum font size is 8px (values <8 ignored)
     //// jwc 26-0120-1620 o header.setPosition(80, yPos)
-    header.setPosition(2, yPos)  // jwc: 2px left margin for header alignment
+    //// jwc 26-0120-1640 o header.setPosition(2, yPos)  // 2px left margin
+    header.setPosition(82, yPos)  // jwc: 82px from left (80+2)
     // Sort bots by most recent update (highest cycle_LastUpdate_Int first)
     sortBotsByUpdateRecency()
     // Calculate visible range based on scroll offset
@@ -222,7 +223,8 @@ function renderPage1_LiveMonitor () {
         //// jwc 26-0120-1540 o botText.setFont(image.font5)  // setFont() not supported
         botText.setMaxFontHeight(8)  // jwc: Arcade minimum font size is 8px (values <8 ignored)
         //// jwc 26-0120-1620 o botText.setPosition(80, yPos)
-        botText.setPosition(2, yPos)  // jwc: 2px left margin for bot row alignment
+        //// jwc 26-0120-1640 o botText.setPosition(2, yPos)  // 2px left margin
+        botText.setPosition(82, yPos)  // jwc: 82px from left (80+2)
         yPos += LINE_HEIGHT
     }
     if (isScrollPaused == 1) {
