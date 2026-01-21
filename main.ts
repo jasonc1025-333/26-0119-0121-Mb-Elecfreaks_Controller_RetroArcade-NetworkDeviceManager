@@ -1,138 +1,4 @@
-//// jwc 26-0120-1200 Main program for MicroBit Network Device Manager (NDM) - Arcade Version
-////
-
-/**
- * ============================================================================
- * 
- * BUTTON CONTROLS
- * 
- * ============================================================================
- */
-/**
- * ============================================================================
- * 
- * RADIO RECEIVER
- * 
- * ============================================================================
- */
-/**
- * ============================================================================
- * 
- * PERIODIC UPDATES
- * 
- * ============================================================================
- */
-/**
- * ============================================================================
- * 
- * MAIN PROGRAM START
- * 
- * ============================================================================
- */
-/**
- * ============================================================================
- * 
- * MICROBIT NETWORK DEVICE MANAGER (NDM) - ARCADE VERSION
- * 
- * ============================================================================
- * 
- * Converted from micro:bit LED display to Elecfreaks Retro Arcade controller
- * 
- * with multi-page interface and scrolling display.
- * 
- * PHASE 1: Core Live Monitor (Page 1)
- * 
- * PAGES:
- * 
- * - Page 1 (currentPage=0): Live Device Monitor (auto-sorted by update recency)
- * 
- * - Page 2 (currentPage=1): Detailed Bot View (future)
- * 
- * - Page 3 (currentPage=2): Settings/Status (future)
- * 
- * FEATURES:
- * 
- * - Receives radio messages from up to 50 bots
- * 
- * - Displays bot data on color screen with scrolling
- * 
- * - Outputs to serial (raw mode) for Raspberry Pi hub
- * 
- * - Auto-sorts bots by most recent update
- * 
- * - Tracks update cycles and age
- * 
- * - Color-coded status indicators
- * 
- * VERSION: v0.3.0-Phase1
- * 
- * DATE: 26-0120-1300
- * 
- * ============================================================================
- */
-/**
- * ============================================================================
- * 
- * GLOBAL VARIABLES
- * 
- * ============================================================================
- */
-/**
- * Page Navigation
- */
-/**
- * Network Data
- */
-/**
- * Network Configuration
- */
-/**
- * Cycle Tracking (NEW for Arcade version)
- */
-/**
- * Scoreboard Control
- */
-/**
- * Debug Flags
- */
-/**
- * System Variables
- */
-/**
- * Temporary variables for parsing
- */
-/**
- * ============================================================================
- * HELPER FUNCTIONS
- * ============================================================================
- */
-
-/**
- * Pad field with spaces to fixed width, use "-" for empty values
- */
-function padField(value: string, width: number): string {
-    let result = ""
-    if (!value || value === "" || value === "0") {
-        result = "-"  // Use "-" for empty/zero values
-    } else {
-        result = value
-    }
-    // Manual padding with spaces to reach desired width
-    while (result.length < width) {
-        result = result + " "
-    }
-    return result
-}
-
-/**
- * ============================================================================
- * DATA PROCESSING FUNCTIONS
- * ============================================================================
- */
-
-/**
- * Sort bots by most recent update (descending cycle_LastUpdate_Int)
- */
+// Sort bots by most recent update (descending cycle_LastUpdate_Int)
 function sortBotsByUpdateRecency () {
     // Simple bubble sort (sufficient for up to 50 bots)
     for (let i = 0; i <= scoreboard_BotsAll_ArrayListOfText_2D.length - 1 - 1; i++) {
@@ -164,26 +30,30 @@ function renderPage1_LiveMonitor () {
     sprites.destroyAllSpritesOfKind(SpriteKind.Text)
     // Title bar
     title = textsprite.create("NETWORK DEVICE MANAGER", 0, 1)
-    //// jwc 26-0120-1540 title.setMaxFontHeight(6)  // Original=8px (default), Reduced to 6px
-    title.setMaxFontHeight(5)  // jwc: Original=8px (default), Reduced to 5px to fit screen
+    // // jwc 26-0120-1540 title.setMaxFontHeight(6)  // Original=8px (default), Reduced to 6px
+    // jwc: Original=8px (default), Reduced to 5px to fit screen
+    title.setMaxFontHeight(5)
     title.setPosition(80, 8)
     pageNum = textsprite.create("[1/3]", 0, 5)
-    //// jwc 26-0120-1540 pageNum.setMaxFontHeight(6)  // Original=8px (default), Reduced to 6px
-    pageNum.setMaxFontHeight(5)  // jwc: Original=8px (default), Reduced to 5px
+    // // jwc 26-0120-1540 pageNum.setMaxFontHeight(6)  // Original=8px (default), Reduced to 6px
+    // jwc: Original=8px (default), Reduced to 5px
+    pageNum.setMaxFontHeight(5)
     pageNum.setPosition(145, 8)
     // Column headers (abbreviated to fit) - W2L/W2R moved to Page 2
     yPos = 20
-    //// jwc 26-0120-1540 o headerText = "Id    Ch  WL  WR  W2L W2R AL  AR  Age"
+    // // jwc 26-0120-1540 o headerText = "Id    Ch  WL  WR  W2L W2R AL  AR  Age"
     headerText = "Id    Ch  WL  WR  AL  AR  Age"
     // Green
     header = textsprite.create(headerText, 0, 7)
-    //// jwc 26-0120-1540 o header.setMaxFontHeight(6)  // Attempt 6px
-    //// jwc 26-0120-1540 o header.setMaxFontHeight(5)  // Attempt 5px
-    //// jwc 26-0120-1540 o header.setFont(image.font5)  // setFont() not supported
-    header.setMaxFontHeight(8)  // jwc: Arcade minimum font size is 8px (values <8 ignored)
-    //// jwc 26-0120-1620 o header.setPosition(80, yPos)
-    //// jwc 26-0120-1640 o header.setPosition(2, yPos)  // 2px left margin
-    header.setPosition(82, yPos)  // jwc: 82px from left (80+2)
+    // // jwc 26-0120-1540 o header.setMaxFontHeight(6)  // Attempt 6px
+    // // jwc 26-0120-1540 o header.setMaxFontHeight(5)  // Attempt 5px
+    // // jwc 26-0120-1540 o header.setFont(image.font5)  // setFont() not supported
+    // jwc: Arcade minimum font size is 8px (values <8 ignored)
+    header.setMaxFontHeight(8)
+    // // jwc 26-0120-1620 o header.setPosition(80, yPos)
+    // // jwc 26-0120-1640 o header.setPosition(2, yPos)  // 2px left margin
+    // jwc: 82px from left (80+2)
+    header.setPosition(82, yPos)
     // Sort bots by most recent update (highest cycle_LastUpdate_Int first)
     sortBotsByUpdateRecency()
     // Calculate visible range based on scroll offset
@@ -196,20 +66,10 @@ function renderPage1_LiveMonitor () {
     for (let bot of visibleBots) {
         // Calculate age
         age = cycle_Current_Int - parseFloat(bot[8])
-        
         // Format with fixed-width columns for alignment - W2L/W2R removed (moved to Page 2)
-        //// jwc 26-0120-1540 o Column widths: Id(5) Ch(3) WL(3) WR(3) W2L(3) W2R(3) AL(3) AR(3) Age(3)
+        // // jwc 26-0120-1540 o Column widths: Id(5) Ch(3) WL(3) WR(3) W2L(3) W2R(3) AL(3) AR(3) Age(3)
         // Column widths: Id(5) Ch(3) WL(3) WR(3) AL(3) AR(3) Age(3)
-        botLine = padField(bot[0], 5) + " " +
-                  padField(bot[1], 3) + " " +
-                  padField(bot[2], 3) + " " +
-                  padField(bot[3], 3) + " " +
-                  //// jwc 26-0120-1540 o padField(bot[4], 3) + " " +  // W2L - moved to Page 2
-                  //// jwc 26-0120-1540 o padField(bot[5], 3) + " " +  // W2R - moved to Page 2
-                  padField(bot[6], 3) + " " +  // AL
-                  padField(bot[7], 3) + " " +  // AR
-                  padField("" + age, 3)
-        
+        botLine = "" + padField(bot[0], 5) + " " + padField(bot[1], 3) + " " + padField(bot[2], 3) + " " + padField(bot[3], 3) + " " + padField(bot[6], 3) + " " + padField(bot[7], 3) + " " + padField("" + age, 3)
         // Color based on age
         // Yellow (default - active)
         color = 5
@@ -218,13 +78,15 @@ function renderPage1_LiveMonitor () {
             color = 1
         }
         botText = textsprite.create(botLine, 0, color)
-        //// jwc 26-0120-1540 o botText.setMaxFontHeight(6)  // Attempt 6px
-        //// jwc 26-0120-1540 o botText.setMaxFontHeight(5)  // Attempt 5px
-        //// jwc 26-0120-1540 o botText.setFont(image.font5)  // setFont() not supported
-        botText.setMaxFontHeight(8)  // jwc: Arcade minimum font size is 8px (values <8 ignored)
-        //// jwc 26-0120-1620 o botText.setPosition(80, yPos)
-        //// jwc 26-0120-1640 o botText.setPosition(2, yPos)  // 2px left margin
-        botText.setPosition(82, yPos)  // jwc: 82px from left (80+2)
+        // // jwc 26-0120-1540 o botText.setMaxFontHeight(6)  // Attempt 6px
+        // // jwc 26-0120-1540 o botText.setMaxFontHeight(5)  // Attempt 5px
+        // // jwc 26-0120-1540 o botText.setFont(image.font5)  // setFont() not supported
+        // jwc: Arcade minimum font size is 8px (values <8 ignored)
+        botText.setMaxFontHeight(8)
+        // // jwc 26-0120-1620 o botText.setPosition(80, yPos)
+        // // jwc 26-0120-1640 o botText.setPosition(2, yPos)  // 2px left margin
+        // jwc: 82px from left (80+2)
+        botText.setPosition(82, yPos)
         yPos += LINE_HEIGHT
     }
     if (isScrollPaused == 1) {
@@ -307,8 +169,7 @@ function renderPage3_Settings () {
     botCount.setPosition(80, yPos2)
     yPos2 += 15
     let freeze = scoreboard_BotsAll_ArrayList_2D_StopFreeze_Bool ? "FROZEN" : "Active"
-// Red or Green
-    let freezeColor = scoreboard_BotsAll_ArrayList_2D_StopFreeze_Bool ? 2 : 4
+let freezeColor = scoreboard_BotsAll_ArrayList_2D_StopFreeze_Bool ? 2 : 4
 freezeText = textsprite.create("Status: " + freeze, 0, freezeColor)
     freezeText.setPosition(80, yPos2)
     nav3 = textsprite.create("A:Next B:Back", 0, 7)
@@ -347,6 +208,8 @@ serial.writeLine("\"" + network_DataPacket_Rcvd_Str + "\"")
                 doScoreboard_BotSingle_ArrayListOfText_Fill_Fn()
                 // Update cycle timestamp
                 // Update cycle timestamp
+                // Update cycle timestamp
+                // Update cycle timestamp
                 scoreboard_botsingle_arraylistoftext_1d[8] = "" + cycle_Current_Int
                 if (_debug_Show_Priority_Hi_Bool) {
                     serial.writeString("* C1>")
@@ -368,8 +231,12 @@ for (let scoreboard_botsingle_columndata_1d of scoreboard_botsingle_arraylistoft
             }
             // Write in the Header Components
             // Write in the Header Components
+            // Write in the Header Components
+            // Write in the Header Components
             scoreboard_BotSingle_KeyValuePairs_ArrayListOfText_1D[0] = network_DataPacket_Rcvd_MessageHeader_Key_AsBotId_Str
             scoreboard_BotSingle_KeyValuePairs_ArrayListOfText_1D[1] = network_DataPacket_Rcvd_MessageHeader_Value_AsBotId_Str
+            // cycle_LastUpdate_Int
+            // cycle_LastUpdate_Int
             // cycle_LastUpdate_Int
             // cycle_LastUpdate_Int
             scoreboard_BotSingle_KeyValuePairs_ArrayListOfText_1D[8] = "" + cycle_Current_Int
@@ -451,30 +318,57 @@ function doScoreboard_BotSingle_ArrayListOfText_Fill_Fn () {
         if (keyvaluepair_key == network_DataPacket_Rcvd_FieldNames_ArrayListOfText[2]) {
             // 2:S1L
             // 2:S1L
+            // 2:S1L
+            // 2:S1L
             scoreboard_BotSingle_KeyValuePairs_ArrayListOfText_1D[2] = keyvaluepair_value
         } else if (keyvaluepair_key == network_DataPacket_Rcvd_FieldNames_ArrayListOfText[3]) {
+            // 3:S0R
+            // 3:S0R
             // 3:S0R
             // 3:S0R
             scoreboard_BotSingle_KeyValuePairs_ArrayListOfText_1D[3] = keyvaluepair_value
         } else if (keyvaluepair_key == network_DataPacket_Rcvd_FieldNames_ArrayListOfText[4]) {
             // 4:S3L
             // 4:S3L
+            // 4:S3L
+            // 4:S3L
             scoreboard_BotSingle_KeyValuePairs_ArrayListOfText_1D[4] = keyvaluepair_value
         } else if (keyvaluepair_key == network_DataPacket_Rcvd_FieldNames_ArrayListOfText[5]) {
+            // 5:S2R
+            // 5:S2R
             // 5:S2R
             // 5:S2R
             scoreboard_BotSingle_KeyValuePairs_ArrayListOfText_1D[5] = keyvaluepair_value
         } else if (keyvaluepair_key == network_DataPacket_Rcvd_FieldNames_ArrayListOfText[6]) {
             // 6:S7L
             // 6:S7L
+            // 6:S7L
+            // 6:S7L
             scoreboard_BotSingle_KeyValuePairs_ArrayListOfText_1D[6] = keyvaluepair_value
         } else if (keyvaluepair_key == network_DataPacket_Rcvd_FieldNames_ArrayListOfText[7]) {
+            // 7:S6R
+            // 7:S6R
             // 7:S6R
             // 7:S6R
             scoreboard_BotSingle_KeyValuePairs_ArrayListOfText_1D[7] = keyvaluepair_value
         }
     }
 }
+// Pad field with spaces to fixed width, use "-" for empty values
+function padField (value: string, width: number) {
+    if (!(true) || value == "" || value == "0") {
+        // Use "-" for empty/zero values
+        result = "-"
+    } else {
+        result = value
+    }
+    // Manual padding with spaces to reach desired width
+    while (result.length < width) {
+        result = "" + result + " "
+    }
+    return result
+}
+let result = ""
 let keyvaluepair_value = ""
 let keyvaluepair_key = ""
 let maxOffset = 0
@@ -522,14 +416,14 @@ let _debug_Show_Priority_Hi_Bool = false
 let scoreboard_Server_SerialPrint_RawScores_Bool = false
 let network_GroupChannel_MyBotAndController_Base0_Int = 0
 let LINE_HEIGHT = 0
-let MAX_CONSOLE_LINES = 0
 let TOTAL_PAGES = 0
-// Display Scrolling (for Page 1)
-let scrollOffset = 0
-let scoreboard_BotsAll_ArrayList_2D_StopFreeze_Bool = false
-let network_DataPacket_Rcvd_Str = ""
 // Scoreboard/NDM Data Structures
 let scoreboard_BotsAll_ArrayListOfText_2D: string[][] = []
+let network_DataPacket_Rcvd_Str = ""
+let scoreboard_BotsAll_ArrayList_2D_StopFreeze_Bool = false
+// Display Scrolling (for Page 1)
+let scrollOffset = 0
+let MAX_CONSOLE_LINES = 0
 TOTAL_PAGES = 3
 // Number of bot rows visible on screen
 MAX_CONSOLE_LINES = 7
