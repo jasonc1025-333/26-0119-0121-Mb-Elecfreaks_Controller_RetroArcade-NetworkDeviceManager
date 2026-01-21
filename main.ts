@@ -177,10 +177,12 @@ function renderPage1_LiveMonitor () {
     headerText = "Id    Ch  WL  WR  AL  AR  Age"
     // Green
     header = textsprite.create(headerText, 0, 7)
-    //// jwc 26-0120-1540 header.setMaxFontHeight(6)  // Original=8px (default), Reduced to 6px
-    //// jwc 26-0120-1540 header.setMaxFontHeight(5)  // Original=8px (default), Reduced to 5px
-    header.setFont(image.font5)  // jwc: Use built-in 5px font for better rendering
-    header.setPosition(80, yPos)
+    //// jwc 26-0120-1540 o header.setMaxFontHeight(6)  // Attempt 6px
+    //// jwc 26-0120-1540 o header.setMaxFontHeight(5)  // Attempt 5px
+    //// jwc 26-0120-1540 o header.setFont(image.font5)  // setFont() not supported
+    header.setMaxFontHeight(8)  // jwc: Arcade minimum font size is 8px (values <8 ignored)
+    //// jwc 26-0120-1620 o header.setPosition(80, yPos)
+    header.setPosition(2, yPos)  // jwc: 2px left margin for header alignment
     // Sort bots by most recent update (highest cycle_LastUpdate_Int first)
     sortBotsByUpdateRecency()
     // Calculate visible range based on scroll offset
@@ -215,10 +217,12 @@ function renderPage1_LiveMonitor () {
             color = 1
         }
         botText = textsprite.create(botLine, 0, color)
-        //// jwc 26-0120-1540 botText.setMaxFontHeight(6)  // Original=8px (default), Reduced to 6px
-        //// jwc 26-0120-1540 botText.setMaxFontHeight(5)  // Original=8px (default), Reduced to 5px
-        botText.setFont(image.font5)  // jwc: Use built-in 5px font for better rendering
-        botText.setPosition(80, yPos)
+        //// jwc 26-0120-1540 o botText.setMaxFontHeight(6)  // Attempt 6px
+        //// jwc 26-0120-1540 o botText.setMaxFontHeight(5)  // Attempt 5px
+        //// jwc 26-0120-1540 o botText.setFont(image.font5)  // setFont() not supported
+        botText.setMaxFontHeight(8)  // jwc: Arcade minimum font size is 8px (values <8 ignored)
+        //// jwc 26-0120-1620 o botText.setPosition(80, yPos)
+        botText.setPosition(2, yPos)  // jwc: 2px left margin for bot row alignment
         yPos += LINE_HEIGHT
     }
     if (isScrollPaused == 1) {
