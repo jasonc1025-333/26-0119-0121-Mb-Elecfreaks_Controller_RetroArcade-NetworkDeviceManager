@@ -52,8 +52,8 @@ function renderPage1_LiveMonitor () {
     header.setMaxFontHeight(8)
     // // jwc 26-0120-1620 o header.setPosition(80, yPos)
     // // jwc 26-0120-1640 o header.setPosition(2, yPos)  // 2px left margin
-    // jwc: 82px from left (80+2)
-    header.setPosition(82, yPos)
+    // // jwc: 82px from left (80+2), 85
+    header.setPosition(90, yPos)
     // Sort bots by most recent update (highest cycle_LastUpdate_Int first)
     sortBotsByUpdateRecency()
     // Calculate visible range based on scroll offset
@@ -85,8 +85,8 @@ function renderPage1_LiveMonitor () {
         botText.setMaxFontHeight(8)
         // // jwc 26-0120-1620 o botText.setPosition(80, yPos)
         // // jwc 26-0120-1640 o botText.setPosition(2, yPos)  // 2px left margin
-        // jwc: 82px from left (80+2)
-        botText.setPosition(82, yPos)
+        // // jwc: 82px from left (80+2), 85
+        botText.setPosition(90, yPos)
         yPos += LINE_HEIGHT
     }
     if (isScrollPaused == 1) {
@@ -207,9 +207,6 @@ serial.writeLine("\"" + network_DataPacket_Rcvd_Str + "\"")
                 scoreboard_BotSingle_KeyValuePairs_ArrayListOfText_1D = scoreboard_botsingle_arraylistoftext_1d
                 doScoreboard_BotSingle_ArrayListOfText_Fill_Fn()
                 // Update cycle timestamp
-                // Update cycle timestamp
-                // Update cycle timestamp
-                // Update cycle timestamp
                 scoreboard_botsingle_arraylistoftext_1d[8] = "" + cycle_Current_Int
                 if (_debug_Show_Priority_Hi_Bool) {
                     serial.writeString("* C1>")
@@ -230,14 +227,8 @@ for (let scoreboard_botsingle_columndata_1d of scoreboard_botsingle_arraylistoft
                 scoreboard_BotSingle_KeyValuePairs_ArrayListOfText_1D.push("")
             }
             // Write in the Header Components
-            // Write in the Header Components
-            // Write in the Header Components
-            // Write in the Header Components
             scoreboard_BotSingle_KeyValuePairs_ArrayListOfText_1D[0] = network_DataPacket_Rcvd_MessageHeader_Key_AsBotId_Str
             scoreboard_BotSingle_KeyValuePairs_ArrayListOfText_1D[1] = network_DataPacket_Rcvd_MessageHeader_Value_AsBotId_Str
-            // cycle_LastUpdate_Int
-            // cycle_LastUpdate_Int
-            // cycle_LastUpdate_Int
             // cycle_LastUpdate_Int
             scoreboard_BotSingle_KeyValuePairs_ArrayListOfText_1D[8] = "" + cycle_Current_Int
             doScoreboard_BotSingle_ArrayListOfText_Fill_Fn()
@@ -317,38 +308,20 @@ function doScoreboard_BotSingle_ArrayListOfText_Fill_Fn () {
         // Write in the Body Components
         if (keyvaluepair_key == network_DataPacket_Rcvd_FieldNames_ArrayListOfText[2]) {
             // 2:S1L
-            // 2:S1L
-            // 2:S1L
-            // 2:S1L
             scoreboard_BotSingle_KeyValuePairs_ArrayListOfText_1D[2] = keyvaluepair_value
         } else if (keyvaluepair_key == network_DataPacket_Rcvd_FieldNames_ArrayListOfText[3]) {
-            // 3:S0R
-            // 3:S0R
-            // 3:S0R
             // 3:S0R
             scoreboard_BotSingle_KeyValuePairs_ArrayListOfText_1D[3] = keyvaluepair_value
         } else if (keyvaluepair_key == network_DataPacket_Rcvd_FieldNames_ArrayListOfText[4]) {
             // 4:S3L
-            // 4:S3L
-            // 4:S3L
-            // 4:S3L
             scoreboard_BotSingle_KeyValuePairs_ArrayListOfText_1D[4] = keyvaluepair_value
         } else if (keyvaluepair_key == network_DataPacket_Rcvd_FieldNames_ArrayListOfText[5]) {
-            // 5:S2R
-            // 5:S2R
-            // 5:S2R
             // 5:S2R
             scoreboard_BotSingle_KeyValuePairs_ArrayListOfText_1D[5] = keyvaluepair_value
         } else if (keyvaluepair_key == network_DataPacket_Rcvd_FieldNames_ArrayListOfText[6]) {
             // 6:S7L
-            // 6:S7L
-            // 6:S7L
-            // 6:S7L
             scoreboard_BotSingle_KeyValuePairs_ArrayListOfText_1D[6] = keyvaluepair_value
         } else if (keyvaluepair_key == network_DataPacket_Rcvd_FieldNames_ArrayListOfText[7]) {
-            // 7:S6R
-            // 7:S6R
-            // 7:S6R
             // 7:S6R
             scoreboard_BotSingle_KeyValuePairs_ArrayListOfText_1D[7] = keyvaluepair_value
         }
