@@ -385,13 +385,8 @@ radio.onReceivedString(function (receivedString) {
         renderPage1_LiveMonitor()
     }
 })
-// Logo Press: Toggle freeze/unfreeze scoreboard
-input.onLogoEvent(TouchButtonEvent.Pressed, function () {
-    scoreboard_BotsAll_ArrayList_2D_StopFreeze_Bool = !(scoreboard_BotsAll_ArrayList_2D_StopFreeze_Bool)
-    game.splash(scoreboard_BotsAll_ArrayList_2D_StopFreeze_Bool ? "FROZEN" : "ACTIVE")
-    // Refresh current page
-    switchToPage(currentPage)
-})
+// Logo Press: Toggle freeze/unfreeze scoreboard (removed - not supported in Arcade)
+// Use controller.menu button instead if needed, or implement alternative
 // Switch to specified page
 function switchToPage (pageNum: number) {
     currentPage = pageNum
@@ -491,7 +486,7 @@ function renderBotConfigPage () {
     
     // Debug status row (bottom, above navigation)
     if (debugStatusText != "") {
-        let debugStatus = textsprite.create(debugStatusText, 0, 4)  // Green color
+        let debugStatus = textsprite.create(debugStatusText, 0, 15)  // White color for better visibility
         debugStatus.setMaxFontHeight(5)
         debugStatus.setPosition(80, 102)
     }
