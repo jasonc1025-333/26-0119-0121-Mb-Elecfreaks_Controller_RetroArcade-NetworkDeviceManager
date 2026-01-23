@@ -406,16 +406,46 @@ function switchToPage (pageNum: number) {
         renderBotConfigPage()
     }
 }
-// CHANGE 6: Add function to send configuration commands to bot
-// This function formats and sends config commands via radio
+// CHANGE 6: Add function to send configuration commands to bot with dynamic channel switching
+// This function switches to bot's channel, sends command, then returns to NDM channel (255)
 function sendConfigCommand(commandType: string, paramName: string, value: number) {
-    // Format: "CFG:botId:paramName:value" or "GET:botId:paramName" or "VAL:botId:paramName:value"
-    let command = commandType + ":" + configBotId + ":" + paramName + ":" + value
+    // Get bot's channel from telemetry data (stored in column index 1)
+    let botChannel = 1  // Default to channel 1
+    if (page1_selectedBotIndex >= 0 && page1_selectedBotIndex < scoreboard_BotsAll_ArrayListOfText_2D.length) {
+        let botChannelStr = scoreboard_BotsAll_ArrayListOfText_2D[page1_selectedBotIndex][1]
+        if (botChannelStr != "" && botChannelStr != "-") {
+            botChannel = parseFloat(botChannelStr)
+        }
+    }
+    
+    // Save current NDM channel
+    let ndmChannel = network_GroupChannel_MyBotAndController_Base0_Int
+    
+    // Format command: "CFG:paramName=value" (bot expects this format)
+    let command = commandType + ":" + paramName + "=" + value
+    
+    serial.writeLine("* NDM: Switching Ch " + ndmChannel + " -> " + botChannel)
+    
+    // Switch to bot's channel
+    radio.setGroup(botChannel)
+    network_GroupChannel_MyBotAndController_Base0_Int = botChannel
+    
+    // Send command
+    serial.writeLine("* NDM SEND: Ch=" + botChannel + " Cmd=" + command)
     radio.sendString(command)
+    
+    // Wait briefly for transmission
+    basic.pause(100)
+    
+    // Switch back to NDM channel
+    radio.setGroup(ndmChannel)
+    network_GroupChannel_MyBotAndController_Base0_Int = ndmChannel
+    
+    serial.writeLine("* NDM: Switched back to Ch " + ndmChannel)
     
     // Debug output
     if (_debug_Show_Priority_Hi_Bool) {
-        serial.writeLine("* SEND CMD: " + command)
+        serial.writeLine("* NDM DEBUG: Bot=" + configBotId + " BotCh=" + botChannel + " Cmd=" + command)
     }
 }
 // Render bot configuration page (Page 3+)
