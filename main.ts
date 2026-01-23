@@ -52,6 +52,14 @@ function renderPage1_LiveMonitor () {
     pageNum.setPosition(145, 8)
     // Column headers (abbreviated to fit) - W2L/W2R moved to Page 2
     yPos = 20
+    
+    // jwc 26-0123-1200: Add up arrow if there's content above visible area
+    if (scrollOffset > 0) {
+        let upArrow = textsprite.create("^", 0, 7)  // Green arrow
+        upArrow.setMaxFontHeight(8)
+        upArrow.setPosition(80, yPos)  // Center position
+    }
+    
     // // jwc 26-0120-1540 o headerText = "Id    Ch  WL  WR  W2L W2R AL  AR  Age"
     headerText = "Id    Ch  WL  WR  AL  AR  Age"
     // Green
@@ -116,6 +124,14 @@ function renderPage1_LiveMonitor () {
         yPos += LINE_HEIGHT
         botIndex++
     }
+    // jwc 26-0123-1200: Add down arrow if there's content below visible area
+    let maxScrollOffset = Math.max(0, scoreboard_BotsAll_ArrayListOfText_2D.length - MAX_CONSOLE_LINES)
+    if (scrollOffset < maxScrollOffset) {
+        let downArrow = textsprite.create("v", 0, 7)  // Green arrow
+        downArrow.setMaxFontHeight(8)
+        downArrow.setPosition(80, yPos)  // Below last bot line
+    }
+    
     // Update navigation text based on mode
     if (page1_selectedBotIndex >= 0) {
         navText = "Up/Dn:Select A:Config B:Exit"
