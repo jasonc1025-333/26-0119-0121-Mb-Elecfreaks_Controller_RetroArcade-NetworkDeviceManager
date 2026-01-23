@@ -413,33 +413,28 @@ function sendConfigCommand(commandType: string, paramName: string, value: number
         }
     }
     
-    // Save current NDM channel
-    let ndmChannel = network_GroupChannel_MyBotAndController_Base0_Int
+    // NDM channel is always 255
+    let network_GroupChannel_NetworkDeviceManager_Base0_Int = 255
     
     // Format command: "CFG:paramName=value" (bot expects this format)
     let command = commandType + ":" + paramName + "=" + value
     
-    serial.writeLine("* NDM: Switching Ch " + ndmChannel + " -> " + botChannel)
+    serial.writeLine("* NDM: Switching Ch 255 -> " + botChannel)
     
     // Set debug status for OLED display
     debugStatusText = "TX Ch" + botChannel + ":" + command
     
-    // Switch to bot's channel
+    // Switch to bot's channel to send command
     radio.setGroup(botChannel)
-    network_GroupChannel_MyBotAndController_Base0_Int = botChannel
     
     // Send command
     serial.writeLine("* NDM SEND: Ch=" + botChannel + " Cmd=" + command)
     radio.sendString(command)
     
-    // Wait briefly for transmission
-    basic.pause(100)
+    // Switch back to NDM channel 255 to receive telemetry
+    radio.setGroup(network_GroupChannel_NetworkDeviceManager_Base0_Int)
     
-    // Switch back to NDM channel
-    radio.setGroup(ndmChannel)
-    network_GroupChannel_MyBotAndController_Base0_Int = ndmChannel
-    
-    serial.writeLine("* NDM: Switched back to Ch " + ndmChannel)
+    serial.writeLine("* NDM: Switched back to Ch 255")
     
     // Debug output
     if (_debug_Show_Priority_Hi_Bool) {
