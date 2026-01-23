@@ -486,7 +486,8 @@ function renderBotConfigPage () {
     
     // Debug status row (bottom, above navigation)
     if (debugStatusText != "") {
-        let debugStatus = textsprite.create(debugStatusText, 0, 15)  // White color for better visibility
+        //// jwc 26-0123-0630 black font \/ let debugStatus = textsprite.create(debugStatusText, 0, 15)  // White color for better visibility
+        let debugStatus = textsprite.create(debugStatusText, 0, 1)  // White color for better visibility
         debugStatus.setMaxFontHeight(5)
         debugStatus.setPosition(80, 102)
     }
