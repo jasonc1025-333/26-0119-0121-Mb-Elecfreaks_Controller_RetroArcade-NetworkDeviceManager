@@ -231,8 +231,8 @@ function renderPage3_Settings () {
     botCount.setPosition(80, yPos2)
     yPos2 += 15
     let freeze = scoreboard_BotsAll_ArrayList_2D_StopFreeze_Bool ? "FROZEN" : "Active"
-let freezeColor = scoreboard_BotsAll_ArrayList_2D_StopFreeze_Bool ? 2 : 4
-freezeText = textsprite.create("Status: " + freeze, 0, freezeColor)
+    let freezeColor = scoreboard_BotsAll_ArrayList_2D_StopFreeze_Bool ? 2 : 4
+    freezeText = textsprite.create("Status: " + freeze, 0, freezeColor)
     freezeText.setPosition(80, yPos2)
     nav3 = textsprite.create("A:Next B:Back", 0, 7)
     nav3.setPosition(80, 112)
@@ -385,10 +385,12 @@ radio.onReceivedString(function (receivedString) {
         renderPage1_LiveMonitor()
     }
 })
-// Menu Button: Reserved for factory assignment (no freeze functionality)
-controller.menu.onEvent(ControllerButtonEvent.Pressed, function () {
-    // Factory default: No action assigned
-    // This button is reserved for future factory features
+// Logo Press: Toggle freeze/unfreeze scoreboard
+input.onLogoEvent(TouchButtonEvent.Pressed, function () {
+    scoreboard_BotsAll_ArrayList_2D_StopFreeze_Bool = !(scoreboard_BotsAll_ArrayList_2D_StopFreeze_Bool)
+    game.splash(scoreboard_BotsAll_ArrayList_2D_StopFreeze_Bool ? "FROZEN" : "ACTIVE")
+    // Refresh current page
+    switchToPage(currentPage)
 })
 // Switch to specified page
 function switchToPage (pageNum: number) {
@@ -423,6 +425,9 @@ function sendConfigCommand(commandType: string, paramName: string, value: number
     let command = commandType + ":" + paramName + "=" + value
     
     serial.writeLine("* NDM: Switching Ch " + ndmChannel + " -> " + botChannel)
+    
+    // Set debug status for OLED display
+    debugStatusText = "TX Ch" + botChannel + ":" + command
     
     // Switch to bot's channel
     radio.setGroup(botChannel)
@@ -482,6 +487,13 @@ function renderBotConfigPage () {
         paramText.setMaxFontHeight(5)
         paramText.setPosition(80, yPosConfig)
         yPosConfig += 10
+    }
+    
+    // Debug status row (bottom, above navigation)
+    if (debugStatusText != "") {
+        let debugStatus = textsprite.create(debugStatusText, 0, 4)  // Green color
+        debugStatus.setMaxFontHeight(5)
+        debugStatus.setPosition(80, 102)
     }
     
     // Navigation text
@@ -630,13 +642,15 @@ let scoreboard_BotsAll_ArrayList_2D_StopFreeze_Bool = false
 // Display Scrolling (for Page 1)
 let scrollOffset = 0
 let MAX_CONSOLE_LINES = 0
+// Debug status text for OLED display
+let debugStatusText = ""
 TOTAL_PAGES = 3
 // Number of bot rows visible on screen
 MAX_CONSOLE_LINES = 7
 LINE_HEIGHT = 12
 // Show welcome splash
 game.splash("MicroBit NDM", "Network Device Manager")
-game.splash("Use A/B to navigate", "Menu to freeze")
+game.splash("Use A/B to navigate", "Logo to freeze")
 // Initialize
 // 'S' = 'S'erver
 // ScoreBoard_Server
