@@ -14,12 +14,23 @@ function sortBotsByUpdateRecency () {
         }
     }
 }
-// Up Button: Scroll up on live monitor page
+// Up Button: Scroll up on live monitor page OR select bot on Page 1 OR select parameter on config page
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     if (currentPage == 0) {
-        isScrollPaused = 1
-        scrollOffset = Math.max(0, scrollOffset - 1)
-        renderPage1_LiveMonitor()
+        if (page1_selectedBotIndex >= 0) {
+            // Bot selection mode - move selection up
+            page1_selectedBotIndex = Math.max(0, page1_selectedBotIndex - 1)
+            renderPage1_LiveMonitor()
+        } else {
+            // Scroll mode
+            isScrollPaused = 1
+            scrollOffset = Math.max(0, scrollOffset - 1)
+            renderPage1_LiveMonitor()
+        }
+    } else if (currentPage >= 3) {
+        // CHANGE 1: Config page - move parameter selection up
+        selectedParamIndex = Math.max(0, selectedParamIndex - 1)
+        renderBotConfigPage()
     }
 })
 // Navigation instructions
@@ -62,7 +73,8 @@ function renderPage1_LiveMonitor () {
         scrollOffset,
         scrollOffset + MAX_CONSOLE_LINES
     )
-// Display bot rows
+// Display bot rows with selection cursor
+    let botIndex = 0
     for (let bot of visibleBots) {
         // Calculate age
         age = cycle_Current_Int - parseFloat(bot[8])
@@ -70,6 +82,15 @@ function renderPage1_LiveMonitor () {
         // // jwc 26-0120-1540 o Column widths: Id(5) Ch(3) WL(3) WR(3) W2L(3) W2R(3) AL(3) AR(3) Age(3)
         // Column widths: Id(5) Ch(3) WL(3) WR(3) AL(3) AR(3) Age(3)
         botLine = "" + padField(bot[0], 5) + " " + padField(bot[1], 3) + " " + padField(bot[2], 3) + " " + padField(bot[3], 3) + " " + padField(bot[6], 3) + " " + padField(bot[7], 3) + " " + padField("" + age, 3)
+        
+        // Add selection cursor if this bot is selected
+        let actualBotIndex = scrollOffset + botIndex
+        if (page1_selectedBotIndex >= 0 && actualBotIndex == page1_selectedBotIndex) {
+            botLine = ">" + botLine
+        } else {
+            botLine = " " + botLine
+        }
+        
         // Color based on age
         // Yellow (default - active)
         color = 5
@@ -77,6 +98,11 @@ function renderPage1_LiveMonitor () {
             // Gray (stale)
             color = 1
         }
+        // Highlight selected bot with cyan
+        if (page1_selectedBotIndex >= 0 && actualBotIndex == page1_selectedBotIndex) {
+            color = 8  // Cyan for selected
+        }
+        
         botText = textsprite.create(botLine, 0, color)
         // // jwc 26-0120-1540 o botText.setMaxFontHeight(6)  // Attempt 6px
         // // jwc 26-0120-1540 o botText.setMaxFontHeight(5)  // Attempt 5px
@@ -88,28 +114,64 @@ function renderPage1_LiveMonitor () {
         // // jwc: 82px from left (80+2), 85
         botText.setPosition(90, yPos)
         yPos += LINE_HEIGHT
+        botIndex++
     }
-    if (isScrollPaused == 1) {
-        navText = "Up/Dn:Scroll Right:Resume"
+    // Update navigation text based on mode
+    if (page1_selectedBotIndex >= 0) {
+        navText = "Up/Dn:Select A:Config B:Exit"
+    } else if (isScrollPaused == 1) {
+        navText = "Up/Dn:Scroll Left:Select Right:Resume"
     } else {
-        navText = "Up/Dn:Pause A:Next"
+        navText = "Up/Dn:Pause Left:Select A:Next"
     }
     nav = textsprite.create(navText, 0, 7)
+    nav.setMaxFontHeight(5)
     nav.setPosition(80, 112)
 }
-// B Button: Previous page
+// B Button: Exit selection mode OR Previous page OR return to Page 1 from config page
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
-    prevPage = (currentPage - 1 + TOTAL_PAGES) % TOTAL_PAGES
-    switchToPage(prevPage)
+    if (currentPage == 0 && page1_selectedBotIndex >= 0) {
+        // Exit selection mode on Page 1
+        page1_selectedBotIndex = -1
+        renderPage1_LiveMonitor()
+    } else if (currentPage >= 3) {
+        // CHANGE 5: Config page - return to Page 1 (Live Monitor)
+        // Reset parameter selection
+        selectedParamIndex = 0
+        switchToPage(0)
+    } else {
+        // Normal page navigation
+        prevPage = (currentPage - 1 + TOTAL_PAGES) % TOTAL_PAGES
+        switchToPage(prevPage)
+    }
 })
 // // jwc 26-0120-1400 not available for Arcade: serial.redirectToUSB()
 function setup_Network_Fn () {
     radio.setGroup(network_GroupChannel_MyBotAndController_Base0_Int)
 }
-// A Button: Next page
+// A Button: Access config page if bot selected, send command on config page, otherwise next page
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
-    nextPage = (currentPage + 1) % TOTAL_PAGES
-    switchToPage(nextPage)
+    if (currentPage == 0 && page1_selectedBotIndex >= 0) {
+        // Jump to selected bot's config page (Page 3+)
+        // Store bot ID for configuration
+        configBotId = scoreboard_BotsAll_ArrayListOfText_2D[page1_selectedBotIndex][0]
+        // Calculate config page number (Page 3 = first bot, Page 4 = second bot, etc.)
+        let configPageNum = 3 + page1_selectedBotIndex
+        switchToPage(configPageNum)
+    } else if (currentPage >= 3) {
+        // CHANGE 7: Config page - send selected parameter to bot
+        let paramName = configParam_FieldNames_ArrayOfText[selectedParamIndex]
+        let paramValue = configParam_Values_Now_ArrayOfNum[selectedParamIndex]
+        sendConfigCommand("CFG", paramName, paramValue)
+        
+        // Show confirmation
+        game.splash("Sent: " + paramName, "Value: " + paramValue)
+        renderBotConfigPage()
+    } else {
+        // Normal page navigation
+        nextPage = (currentPage + 1) % TOTAL_PAGES
+        switchToPage(nextPage)
+    }
 })
 // ============================================================================
 // SETUP FUNCTIONS
@@ -175,12 +237,41 @@ freezeText = textsprite.create("Status: " + freeze, 0, freezeColor)
     nav3 = textsprite.create("A:Next B:Back", 0, 7)
     nav3.setPosition(80, 112)
 }
-// Right Button: Resume auto-scrolling
+// Left Button: Enter/Exit bot selection mode on Page 1 OR decrease parameter value on config page
+controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (currentPage == 0) {
+        if (page1_selectedBotIndex >= 0) {
+            // Exit selection mode
+            page1_selectedBotIndex = -1
+        } else {
+            // Enter selection mode - select first bot
+            if (scoreboard_BotsAll_ArrayListOfText_2D.length > 0) {
+                page1_selectedBotIndex = 0
+            }
+        }
+        renderPage1_LiveMonitor()
+    } else if (currentPage >= 3) {
+        // CHANGE 3: Config page - decrease selected parameter value
+        let currentValue = configParam_Values_Now_ArrayOfNum[selectedParamIndex]
+        let minValue = configParam_Values_Min_ArrayOfNum[selectedParamIndex]
+        let newValue = Math.max(minValue, currentValue - 1)
+        configParam_Values_Now_ArrayOfNum[selectedParamIndex] = newValue
+        renderBotConfigPage()
+    }
+})
+// Right Button: Resume auto-scrolling OR increase parameter value on config page
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     if (currentPage == 0 && isScrollPaused == 1) {
         isScrollPaused = 0
         scrollOffset = Math.max(0, scoreboard_BotsAll_ArrayListOfText_2D.length - MAX_CONSOLE_LINES)
         renderPage1_LiveMonitor()
+    } else if (currentPage >= 3) {
+        // CHANGE 4: Config page - increase selected parameter value
+        let currentValue = configParam_Values_Now_ArrayOfNum[selectedParamIndex]
+        let maxValue = configParam_Values_Max_ArrayOfNum[selectedParamIndex]
+        let newValue = Math.min(maxValue, currentValue + 1)
+        configParam_Values_Now_ArrayOfNum[selectedParamIndex] = newValue
+        renderBotConfigPage()
     }
 })
 // Process received radio message
@@ -261,13 +352,26 @@ function renderPage2_DetailedView () {
     nav2 = textsprite.create("A:Next B:Back", 0, 7)
     nav2.setPosition(80, 112)
 }
-// Down Button: Scroll down on live monitor page
+// Down Button: Scroll down on live monitor page OR select bot on Page 1 OR select parameter on config page
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     if (currentPage == 0) {
-        isScrollPaused = 1
-        maxOffset = Math.max(0, scoreboard_BotsAll_ArrayListOfText_2D.length - MAX_CONSOLE_LINES)
-        scrollOffset = Math.min(maxOffset, scrollOffset + 1)
-        renderPage1_LiveMonitor()
+        if (page1_selectedBotIndex >= 0) {
+            // Bot selection mode - move selection down
+            let maxIndex = scoreboard_BotsAll_ArrayListOfText_2D.length - 1
+            page1_selectedBotIndex = Math.min(maxIndex, page1_selectedBotIndex + 1)
+            renderPage1_LiveMonitor()
+        } else {
+            // Scroll mode
+            isScrollPaused = 1
+            maxOffset = Math.max(0, scoreboard_BotsAll_ArrayListOfText_2D.length - MAX_CONSOLE_LINES)
+            scrollOffset = Math.min(maxOffset, scrollOffset + 1)
+            renderPage1_LiveMonitor()
+        }
+    } else if (currentPage >= 3) {
+        // CHANGE 2: Config page - move parameter selection down
+        let maxParamIndex = configParam_DisplayNames_ArrayOfText.length - 1
+        selectedParamIndex = Math.min(maxParamIndex, selectedParamIndex + 1)
+        renderBotConfigPage()
     }
 })
 // To Insure Both at Synchronized States, Both Bot and Controller Must Start/Re-Start at 'setup_and_startup' State
@@ -297,7 +401,65 @@ function switchToPage (pageNum: number) {
         renderPage2_DetailedView()
     } else if (currentPage == 2) {
         renderPage3_Settings()
+    } else if (currentPage >= 3) {
+        // Dynamic config pages (Page 3+ = bot config pages)
+        renderBotConfigPage()
     }
+}
+// CHANGE 6: Add function to send configuration commands to bot
+// This function formats and sends config commands via radio
+function sendConfigCommand(commandType: string, paramName: string, value: number) {
+    // Format: "CFG:botId:paramName:value" or "GET:botId:paramName" or "VAL:botId:paramName:value"
+    let command = commandType + ":" + configBotId + ":" + paramName + ":" + value
+    radio.sendString(command)
+    
+    // Debug output
+    if (_debug_Show_Priority_Hi_Bool) {
+        serial.writeLine("* SEND CMD: " + command)
+    }
+}
+// Render bot configuration page (Page 3+)
+function renderBotConfigPage () {
+    // Purple background
+    scene.setBackgroundColor(11)
+    sprites.destroyAllSpritesOfKind(SpriteKind.Text)
+    
+    // Title bar
+    let titleText = "CONFIG: " + configBotId
+    let configTitle = textsprite.create(titleText, 0, 1)
+    configTitle.setMaxFontHeight(5)
+    configTitle.setPosition(80, 8)
+    
+    // Page number
+    let pageNumText = "[" + (currentPage + 1) + "/...]"
+    let configPageNum = textsprite.create(pageNumText, 0, 5)
+    configPageNum.setMaxFontHeight(5)
+    configPageNum.setPosition(145, 8)
+    
+    // Display configuration parameters
+    let yPosConfig = 25
+    for (let i = 0; i < configParam_DisplayNames_ArrayOfText.length; i++) {
+        let paramLine = configParam_DisplayNames_ArrayOfText[i] + ": " + configParam_Values_Now_ArrayOfNum[i]
+        
+        // Highlight selected parameter
+        let paramColor = 15  // White (default)
+        if (i == selectedParamIndex) {
+            paramLine = "> " + paramLine
+            paramColor = 8  // Cyan (selected)
+        } else {
+            paramLine = "  " + paramLine
+        }
+        
+        let paramText = textsprite.create(paramLine, 0, paramColor)
+        paramText.setMaxFontHeight(5)
+        paramText.setPosition(80, yPosConfig)
+        yPosConfig += 10
+    }
+    
+    // Navigation text
+    let configNav = textsprite.create("Up/Dn:Select L/R:Edit A:Send B:Back", 0, 7)
+    configNav.setMaxFontHeight(5)
+    configNav.setPosition(80, 112)
 }
 // Fill bot data from parsed key-value pairs
 function doScoreboard_BotSingle_ArrayListOfText_Fill_Fn () {
@@ -341,6 +503,49 @@ function padField (value: string, width: number) {
     }
     return result
 }
+// ============================================================================
+// PHASE 2B: REMOTE CONFIGURATION VARIABLES
+// ============================================================================
+let page1_selectedBotIndex = -1  // -1 = no selection, 0+ = bot index
+let page2_selectedBotIndex = 0   // For Page 2 telemetry selection
+let selectedParamIndex = 0       // Which parameter is selected on config page
+let configBotId = ""             // Bot ID being configured
+
+// Configuration parameter names (10 total) - matches bot/controller code
+let configParam_FieldNames_ArrayOfText = [
+    "groupChanl",
+    "motorFwd",
+    "motorBwd",
+    "motorTurn",
+    "turboFwd",
+    "turboBwd",
+    "turboTurn",
+    "servoMin",
+    "servoMax",
+    "servoInc"
+]
+
+// Configuration display names for UI
+let configParam_DisplayNames_ArrayOfText = [
+    "Group Channel",
+    "Motor Forward %",
+    "Motor Backward %",
+    "Motor Turn %",
+    "Turbo Forward %",
+    "Turbo Backward %",
+    "Turbo Turn %",
+    "Servo Min Deg",
+    "Servo Max Deg",
+    "Servo Inc Deg"
+]
+
+// Current configuration values (defaults matching bot/controller)
+let configParam_Values_Now_ArrayOfNum = [1, 60, 60, 50, 90, 90, 80, 0, 220, 15]
+
+// Min/Max ranges for each parameter
+let configParam_Values_Min_ArrayOfNum = [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+let configParam_Values_Max_ArrayOfNum = [99, 100, 100, 100, 100, 100, 100, 220, 220, 45]
+
 let result = ""
 let keyvaluepair_value = ""
 let keyvaluepair_key = ""
