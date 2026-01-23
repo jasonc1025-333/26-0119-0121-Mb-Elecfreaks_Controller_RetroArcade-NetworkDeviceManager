@@ -385,12 +385,10 @@ radio.onReceivedString(function (receivedString) {
         renderPage1_LiveMonitor()
     }
 })
-// Menu Button: Freeze/Unfreeze scoreboard
+// Menu Button: Reserved for factory assignment (no freeze functionality)
 controller.menu.onEvent(ControllerButtonEvent.Pressed, function () {
-    scoreboard_BotsAll_ArrayList_2D_StopFreeze_Bool = !(scoreboard_BotsAll_ArrayList_2D_StopFreeze_Bool)
-    game.splash(scoreboard_BotsAll_ArrayList_2D_StopFreeze_Bool ? "FROZEN" : "ACTIVE")
-    // Refresh current page
-    switchToPage(currentPage)
+    // Factory default: No action assigned
+    // This button is reserved for future factory features
 })
 // Switch to specified page
 function switchToPage (pageNum: number) {
