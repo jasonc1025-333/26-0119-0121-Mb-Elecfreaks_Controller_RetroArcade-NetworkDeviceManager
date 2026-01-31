@@ -354,17 +354,116 @@ for (let scoreboard_botsingle_columndata_1d2 of scoreboard_BotSingle_KeyValuePai
         }
     }
 }
-// Page 2 (currentPage=1): Detailed Bot View (placeholder)
+// Page 2 (currentPage=1): Detailed Bot View - Top-down car visualization
 function renderPage2_DetailedView () {
     // Green background
     scene.setBackgroundColor(7)
     sprites.destroyAllSpritesOfKind(SpriteKind.Text)
+    
+    // Title bar
     title2 = textsprite.create("DETAILED BOT VIEW", 0, 1)
     title2.setPosition(80, 10)
     pageNum2 = textsprite.create("[2/3]", 0, 5)
     pageNum2.setPosition(145, 10)
-    info2 = textsprite.create("Coming Soon!", 0, 15)
-    info2.setPosition(80, 60)
+    
+    // Get most recent bot data (first in sorted list)
+    if (scoreboard_BotsAll_ArrayListOfText_2D.length > 0) {
+        let botData = scoreboard_BotsAll_ArrayListOfText_2D[0]
+        
+        // Extract telemetry values
+        let wl = botData[2]  // S1L - Front-Left wheel
+        let wr = botData[3]  // S0R - Front-Right wheel
+        let w2l = botData[4] // S3L - Rear-Left wheel
+        let w2r = botData[5] // S2R - Rear-Right wheel
+        let al = botData[6]  // S7L - Left servo arm
+        let ar = botData[7]  // S6R - Right servo arm
+        
+        // Car body dimensions and position
+        let carCenterX = 80
+        let carCenterY = 60
+        let carWidth = 30
+        let carHeight = 20
+        let carLeft = carCenterX - carWidth / 2
+        let carRight = carCenterX + carWidth / 2
+        let carTop = carCenterY - carHeight / 2
+        let carBottom = carCenterY + carHeight / 2
+        
+        // Draw car body (rectangle)
+        let carBody = image.create(160, 120)
+        carBody.drawRect(carLeft, carTop, carWidth, carHeight, 1)  // Black outline
+        let carSprite = sprites.create(carBody, SpriteKind.Text)
+        carSprite.setPosition(80, 60)
+        
+        // Wheel dimensions
+        let wheelWidth = 8
+        let wheelHeight = 6
+        
+        // Draw wheels (4 small rectangles at corners)
+        let wheelsImg = image.create(160, 120)
+        // Front-Left wheel
+        wheelsImg.fillRect(carLeft - wheelWidth - 2, carTop - 2, wheelWidth, wheelHeight, 15)
+        // Front-Right wheel
+        wheelsImg.fillRect(carRight + 2, carTop - 2, wheelWidth, wheelHeight, 15)
+        // Rear-Left wheel
+        wheelsImg.fillRect(carLeft - wheelWidth - 2, carBottom - wheelHeight + 2, wheelWidth, wheelHeight, 15)
+        // Rear-Right wheel
+        wheelsImg.fillRect(carRight + 2, carBottom - wheelHeight + 2, wheelWidth, wheelHeight, 15)
+        let wheelsSprite = sprites.create(wheelsImg, SpriteKind.Text)
+        wheelsSprite.setPosition(80, 60)
+        
+        // Draw servo arms (lines extending from car sides)
+        let servoImg = image.create(160, 120)
+        // Left servo arm - horizontal line extending left
+        let leftArmLength = 15
+        servoImg.drawLine(carLeft, carCenterY, carLeft - leftArmLength, carCenterY, 4)  // Orange line
+        // Right servo arm - horizontal line extending right
+        let rightArmLength = 15
+        servoImg.drawLine(carRight, carCenterY, carRight + rightArmLength, carCenterY, 4)  // Orange line
+        let servoSprite = sprites.create(servoImg, SpriteKind.Text)
+        servoSprite.setPosition(80, 60)
+        
+        // Display parameter labels
+        // Front-Left wheel (WL)
+        let wlText = textsprite.create("WL:" + wl, 0, 15)
+        wlText.setMaxFontHeight(5)
+        wlText.setPosition(carLeft - 10, carTop - 8)
+        
+        // Front-Right wheel (WR)
+        let wrText = textsprite.create("WR:" + wr, 0, 15)
+        wrText.setMaxFontHeight(5)
+        wrText.setPosition(carRight + 15, carTop - 8)
+        
+        // Rear-Left wheel (W2L)
+        let w2lText = textsprite.create("W2L:" + w2l, 0, 15)
+        w2lText.setMaxFontHeight(5)
+        w2lText.setPosition(carLeft - 10, carBottom + 8)
+        
+        // Rear-Right wheel (W2R)
+        let w2rText = textsprite.create("W2R:" + w2r, 0, 15)
+        w2rText.setMaxFontHeight(5)
+        w2rText.setPosition(carRight + 15, carBottom + 8)
+        
+        // Left servo arm (AL)
+        let alText = textsprite.create("AL:" + al, 0, 4)  // Orange text
+        alText.setMaxFontHeight(5)
+        alText.setPosition(carLeft - leftArmLength - 10, carCenterY)
+        
+        // Right servo arm (AR)
+        let arText = textsprite.create("AR:" + ar, 0, 4)  // Orange text
+        arText.setMaxFontHeight(5)
+        arText.setPosition(carRight + rightArmLength + 10, carCenterY)
+        
+        // Display bot ID
+        let botIdText = textsprite.create("Bot: " + botData[0], 0, 1)
+        botIdText.setMaxFontHeight(5)
+        botIdText.setPosition(80, 25)
+    } else {
+        // No bots available
+        info2 = textsprite.create("No bots detected", 0, 15)
+        info2.setPosition(80, 60)
+    }
+    
+    // Navigation
     nav2 = textsprite.create("A:Next B:Back", 0, 7)
     nav2.setPosition(80, 112)
 }
