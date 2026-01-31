@@ -356,14 +356,14 @@ for (let scoreboard_botsingle_columndata_1d2 of scoreboard_BotSingle_KeyValuePai
 }
 // Page 2 (currentPage=1): Detailed Bot View - Top-down car visualization
 function renderPage2_DetailedView () {
-    // Green background
-    scene.setBackgroundColor(7)
+    // Black background
+    scene.setBackgroundColor(15)
     sprites.destroyAllSpritesOfKind(SpriteKind.Text)
     
-    // Title bar
+    // Title bar - White text
     title2 = textsprite.create("DETAILED BOT VIEW", 0, 1)
     title2.setPosition(80, 10)
-    pageNum2 = textsprite.create("[2/3]", 0, 5)
+    pageNum2 = textsprite.create("[2/3]", 0, 1)
     pageNum2.setPosition(145, 10)
     
     // Get most recent bot data (first in sorted list)
@@ -388,9 +388,9 @@ function renderPage2_DetailedView () {
         let carTop = carCenterY - carHeight / 2
         let carBottom = carCenterY + carHeight / 2
         
-        // Draw car body (rectangle)
+        // Draw car body (rectangle) - Yellow
         let carBody = image.create(160, 120)
-        carBody.drawRect(carLeft, carTop, carWidth, carHeight, 1)  // Black outline
+        carBody.drawRect(carLeft, carTop, carWidth, carHeight, 5)  // Yellow outline (color 5)
         let carSprite = sprites.create(carBody, SpriteKind.Text)
         carSprite.setPosition(80, 60)
         
@@ -398,63 +398,63 @@ function renderPage2_DetailedView () {
         let wheelWidth = 8
         let wheelHeight = 6
         
-        // Draw wheels (4 small rectangles at corners)
+        // Draw wheels (4 small rectangles at corners) - Bright Blue
         let wheelsImg = image.create(160, 120)
         // Front-Left wheel
-        wheelsImg.fillRect(carLeft - wheelWidth - 2, carTop - 2, wheelWidth, wheelHeight, 15)
+        wheelsImg.fillRect(carLeft - wheelWidth - 2, carTop - 2, wheelWidth, wheelHeight, 8)  // Bright blue (color 8)
         // Front-Right wheel
-        wheelsImg.fillRect(carRight + 2, carTop - 2, wheelWidth, wheelHeight, 15)
+        wheelsImg.fillRect(carRight + 2, carTop - 2, wheelWidth, wheelHeight, 8)  // Bright blue
         // Rear-Left wheel
-        wheelsImg.fillRect(carLeft - wheelWidth - 2, carBottom - wheelHeight + 2, wheelWidth, wheelHeight, 15)
+        wheelsImg.fillRect(carLeft - wheelWidth - 2, carBottom - wheelHeight + 2, wheelWidth, wheelHeight, 8)  // Bright blue
         // Rear-Right wheel
-        wheelsImg.fillRect(carRight + 2, carBottom - wheelHeight + 2, wheelWidth, wheelHeight, 15)
+        wheelsImg.fillRect(carRight + 2, carBottom - wheelHeight + 2, wheelWidth, wheelHeight, 8)  // Bright blue
         let wheelsSprite = sprites.create(wheelsImg, SpriteKind.Text)
         wheelsSprite.setPosition(80, 60)
         
-        // Draw servo arms (lines extending from car sides)
+        // Draw servo arms (lines extending from car sides) - Bright Orange
         let servoImg = image.create(160, 120)
         // Left servo arm - horizontal line extending left
         let leftArmLength = 15
-        servoImg.drawLine(carLeft, carCenterY, carLeft - leftArmLength, carCenterY, 4)  // Orange line
+        servoImg.drawLine(carLeft, carCenterY, carLeft - leftArmLength, carCenterY, 4)  // Bright orange (color 4)
         // Right servo arm - horizontal line extending right
         let rightArmLength = 15
-        servoImg.drawLine(carRight, carCenterY, carRight + rightArmLength, carCenterY, 4)  // Orange line
+        servoImg.drawLine(carRight, carCenterY, carRight + rightArmLength, carCenterY, 4)  // Bright orange
         let servoSprite = sprites.create(servoImg, SpriteKind.Text)
         servoSprite.setPosition(80, 60)
         
-        // Display parameter labels with variable names
+        // Display parameter labels with variable names - Bright Green values
         // Front-Left wheel (WL) - S1L
-        let wlText = textsprite.create("S1L:" + wl, 0, 15)
+        let wlText = textsprite.create("S1L:" + wl, 0, 7)  // Bright green (color 7)
         wlText.setMaxFontHeight(5)
         wlText.setPosition(carLeft - 10, carTop - 8)
         
         // Front-Right wheel (WR) - S0R
-        let wrText = textsprite.create("S0R:" + wr, 0, 15)
+        let wrText = textsprite.create("S0R:" + wr, 0, 7)  // Bright green
         wrText.setMaxFontHeight(5)
         wrText.setPosition(carRight + 15, carTop - 8)
         
         // Rear-Left wheel (W2L) - S3L
-        let w2lText = textsprite.create("S3L:" + w2l, 0, 15)
+        let w2lText = textsprite.create("S3L:" + w2l, 0, 7)  // Bright green
         w2lText.setMaxFontHeight(5)
         w2lText.setPosition(carLeft - 10, carBottom + 8)
         
         // Rear-Right wheel (W2R) - S2R
-        let w2rText = textsprite.create("S2R:" + w2r, 0, 15)
+        let w2rText = textsprite.create("S2R:" + w2r, 0, 7)  // Bright green
         w2rText.setMaxFontHeight(5)
         w2rText.setPosition(carRight + 15, carBottom + 8)
         
         // Left servo arm (AL) - S7L
-        let alText = textsprite.create("S7L:" + al, 0, 4)  // Orange text
+        let alText = textsprite.create("S7L:" + al, 0, 7)  // Bright green
         alText.setMaxFontHeight(5)
         alText.setPosition(carLeft - leftArmLength - 10, carCenterY)
         
         // Right servo arm (AR) - S6R
-        let arText = textsprite.create("S6R:" + ar, 0, 4)  // Orange text
+        let arText = textsprite.create("S6R:" + ar, 0, 7)  // Bright green
         arText.setMaxFontHeight(5)
         arText.setPosition(carRight + rightArmLength + 10, carCenterY)
         
-        // Display bot ID
-        let botIdText = textsprite.create("Bot: " + botData[0], 0, 1)
+        // Display bot ID - White text
+        let botIdText = textsprite.create("Bot: " + botData[0], 0, 1)  // White
         botIdText.setMaxFontHeight(5)
         botIdText.setPosition(80, 25)
     } else {
