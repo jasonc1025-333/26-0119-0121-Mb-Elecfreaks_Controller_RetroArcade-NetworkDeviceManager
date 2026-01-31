@@ -422,34 +422,34 @@ function renderPage2_DetailedView () {
         let servoSprite = sprites.create(servoImg, SpriteKind.Text)
         servoSprite.setPosition(80, 60)
         
-        // Display parameter labels
-        // Front-Left wheel (WL)
-        let wlText = textsprite.create("WL:" + wl, 0, 15)
+        // Display parameter labels with variable names
+        // Front-Left wheel (WL) - S1L
+        let wlText = textsprite.create("S1L:" + wl, 0, 15)
         wlText.setMaxFontHeight(5)
         wlText.setPosition(carLeft - 10, carTop - 8)
         
-        // Front-Right wheel (WR)
-        let wrText = textsprite.create("WR:" + wr, 0, 15)
+        // Front-Right wheel (WR) - S0R
+        let wrText = textsprite.create("S0R:" + wr, 0, 15)
         wrText.setMaxFontHeight(5)
         wrText.setPosition(carRight + 15, carTop - 8)
         
-        // Rear-Left wheel (W2L)
-        let w2lText = textsprite.create("W2L:" + w2l, 0, 15)
+        // Rear-Left wheel (W2L) - S3L
+        let w2lText = textsprite.create("S3L:" + w2l, 0, 15)
         w2lText.setMaxFontHeight(5)
         w2lText.setPosition(carLeft - 10, carBottom + 8)
         
-        // Rear-Right wheel (W2R)
-        let w2rText = textsprite.create("W2R:" + w2r, 0, 15)
+        // Rear-Right wheel (W2R) - S2R
+        let w2rText = textsprite.create("S2R:" + w2r, 0, 15)
         w2rText.setMaxFontHeight(5)
         w2rText.setPosition(carRight + 15, carBottom + 8)
         
-        // Left servo arm (AL)
-        let alText = textsprite.create("AL:" + al, 0, 4)  // Orange text
+        // Left servo arm (AL) - S7L
+        let alText = textsprite.create("S7L:" + al, 0, 4)  // Orange text
         alText.setMaxFontHeight(5)
         alText.setPosition(carLeft - leftArmLength - 10, carCenterY)
         
-        // Right servo arm (AR)
-        let arText = textsprite.create("AR:" + ar, 0, 4)  // Orange text
+        // Right servo arm (AR) - S6R
+        let arText = textsprite.create("S6R:" + ar, 0, 4)  // Orange text
         arText.setMaxFontHeight(5)
         arText.setPosition(carRight + rightArmLength + 10, carCenterY)
         
