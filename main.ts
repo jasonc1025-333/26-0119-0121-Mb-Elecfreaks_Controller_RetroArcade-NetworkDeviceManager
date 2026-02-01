@@ -378,11 +378,11 @@ function renderPage2_DetailedView () {
         let al = botData[6]  // S7L - Left servo arm
         let ar = botData[7]  // S6R - Right servo arm
         
-        // Car body dimensions and position
+        // Car body dimensions and position - Double height
         let carCenterX = 80
         let carCenterY = 60
         let carWidth = 30
-        let carHeight = 20
+        let carHeight = 40  // Doubled from 20 to 40
         let carLeft = carCenterX - carWidth / 2
         let carRight = carCenterX + carWidth / 2
         let carTop = carCenterY - carHeight / 2
@@ -411,14 +411,20 @@ function renderPage2_DetailedView () {
         let wheelsSprite = sprites.create(wheelsImg, SpriteKind.Text)
         wheelsSprite.setPosition(80, 60)
         
-        // Draw servo arms (lines extending from car sides) - Bright Orange
+        // Draw servo arms (lines extending from car sides) - Bright Orange, 2x length, 3x width
         let servoImg = image.create(160, 120)
-        // Left servo arm - horizontal line extending left
-        let leftArmLength = 15
-        servoImg.drawLine(carLeft, carCenterY, carLeft - leftArmLength, carCenterY, 4)  // Bright orange (color 4)
-        // Right servo arm - horizontal line extending right
-        let rightArmLength = 15
-        servoImg.drawLine(carRight, carCenterY, carRight + rightArmLength, carCenterY, 4)  // Bright orange
+        // Left servo arm - horizontal thick line extending left (2x length, 3x width)
+        let leftArmLength = 30  // Doubled from 15 to 30
+        // Draw 3 parallel lines to make it 3x wider
+        servoImg.drawLine(carLeft, carCenterY - 1, carLeft - leftArmLength, carCenterY - 1, 4)  // Top line
+        servoImg.drawLine(carLeft, carCenterY, carLeft - leftArmLength, carCenterY, 4)  // Middle line
+        servoImg.drawLine(carLeft, carCenterY + 1, carLeft - leftArmLength, carCenterY + 1, 4)  // Bottom line
+        // Right servo arm - horizontal thick line extending right (2x length, 3x width)
+        let rightArmLength = 30  // Doubled from 15 to 30
+        // Draw 3 parallel lines to make it 3x wider
+        servoImg.drawLine(carRight, carCenterY - 1, carRight + rightArmLength, carCenterY - 1, 4)  // Top line
+        servoImg.drawLine(carRight, carCenterY, carRight + rightArmLength, carCenterY, 4)  // Middle line
+        servoImg.drawLine(carRight, carCenterY + 1, carRight + rightArmLength, carCenterY + 1, 4)  // Bottom line
         let servoSprite = sprites.create(servoImg, SpriteKind.Text)
         servoSprite.setPosition(80, 60)
         
